@@ -1,0 +1,23 @@
+Table 1 (R=5, C=3) -- Quick
+Comparisons=12 Exchanges=5
+2 7 2
+2 7 3
+4 8 5
+4 9 0
+4 9 1
+
+Table 1 (R=5, C=3) -- Heap
+Comparisons=17 Exchanges=7
+2 7 2
+2 7 3
+4 8 5
+4 9 0
+4 9 1
+
+Table 1 (R=5, C=3) -- Lex
+Comparisons=19 Exchanges=21
+2 7 2
+2 7 3
+4 8 5
+4 9 0
+4 9 1

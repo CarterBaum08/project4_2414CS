@@ -1,0 +1,190 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+/* ============================================================
+   Helper functions for row operations
+   ============================================================ */
+
+// Return a pointer to row r (mutable)
+inline int* rowPtr(int* data, int r, int C) {
+    return data + r * C;
+}
+
+// Return a pointer to row r (const)
+inline const int* rowPtrConst(const int* data, int r, int C) {
+    return data + r * C;
+}
+
+/* ----------- REQUIRED: Compare two rows A and B lexicographically ------
+   Must:
+     - Compare column 0, then column 1, … until difference found
+     - Return -1, 0, +1 normally
+     - Increment cmpCount ONCE per scalar comparison A[col] ? B[col]
+   ---------------------------------------------------------------------- */
+int compareRows(const int* A, const int* B, int C, long long &cmpCount) {
+    // TODO: STUDENT IMPLEMENTS
+    return 0;
+}
+
+/* ----------- REQUIRED: Swap rows i and j (physically copy C ints) ------
+   Must:
+     - Swap row i and row j element-by-element
+     - Count ONE exchange per row-level swap
+   ---------------------------------------------------------------------- */
+void rowSwap(int* data, int i, int j, int C, long long &exchanges) {
+    // TODO: STUDENT IMPLEMENTS
+}
+
+/* Copy row src → dst (C ints). No counters incremented. */
+void copyRowInto(int* dst, const int* src, int C) {
+    for (int c = 0; c < C; ++c) dst[c] = src[c];
+}
+
+/* ============================================================
+   Quick Sort (Lomuto partition)
+   ============================================================ */
+
+// TODO: Students implement partition_lomuto()
+// TODO: Students implement quicksort_rows_rec()
+// TODO: Students implement quicksort_rows()
+
+int partition_lomuto(int* data, int lo, int hi, int C,
+                     long long &cmpCount, long long &exchanges) {
+    // TODO
+    return lo;
+}
+
+void quicksort_rows_rec(int* data, int lo, int hi, int C,
+                        long long &cmpCount, long long &exchanges) {
+    // TODO
+}
+
+void quicksort_rows(int* data, int R, int C,
+                    long long &cmpCount, long long &exchanges) {
+    // TODO
+}
+
+
+/* ============================================================
+   Heap Sort
+   ============================================================ */
+
+// TODO: Students implement heapify()
+// TODO: Students implement heapsort_rows()
+
+void heapify(int* data, int n, int i, int C,
+             long long &cmpCount, long long &exchanges) {
+    // TODO
+}
+
+void heapsort_rows(int* data, int R, int C,
+                   long long &cmpCount, long long &exchanges) {
+    // TODO
+}
+
+
+/* ============================================================
+   LexSort (Stable insertion passes from rightmost → leftmost column)
+   ============================================================ */
+
+// TODO: Students implement lexsort_lexpass()
+
+void lexsort_lexpass(int* data, int R, int C,
+                     long long &cmpCount, long long &exchanges) {
+    // TODO
+}
+
+
+/* ============================================================
+   Generic dispatcher (DO NOT MODIFY)
+   ============================================================ */
+
+enum Alg { QUICK, HEAP, LEX };
+
+void generic_table_sort(int* data, int R, int C, Alg alg,
+                        long long &comparisons, long long &exchanges) {
+    comparisons = 0;
+    exchanges = 0;
+    if (R <= 1) return;
+
+    if (alg == QUICK) {
+        quicksort_rows(data, R, C, comparisons, exchanges);
+    } else if (alg == HEAP) {
+        heapsort_rows(data, R, C, comparisons, exchanges);
+    } else if (alg == LEX) {
+        lexsort_lexpass(data, R, C, comparisons, exchanges);
+    }
+}
+
+
+/* ============================================================
+   Output block printing (DO NOT MODIFY)
+   ============================================================ */
+
+void print_table_block(int t, int R, int C, const string &algName,
+                       int* data, long long comps, long long exch) {
+    cout << "Table " << t << " (R=" << R << ", C=" << C << ") \u2014 "
+         << algName << "\n";
+    cout << "Comparisons=" << comps << " Exchanges=" << exch << "\n";
+
+    for (int r = 0; r < R; ++r) {
+        const int* row = rowPtrConst(data, r, C);
+        for (int c = 0; c < C; ++c) {
+            if (c) cout << ' ';
+            cout << row[c];
+        }
+        cout << "\n";
+    }
+}
+
+
+/* ============================================================
+   Main driver (DO NOT MODIFY)
+   Reads T tables, prints Quick / Heap / Lex in correct order
+   ============================================================ */
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    if (!(cin >> T)) return 0;
+
+    for (int t = 1; t <= T; ++t) {
+        int R, C;
+        cin >> R >> C;
+
+        int* A = (R > 0 && C > 0) ? new int[R*C] : nullptr;
+        for (int i = 0; i < R*C; ++i) cin >> A[i];
+
+        int* W = (R > 0 && C > 0) ? new int[R*C] : nullptr;
+
+        // ---------------- QUICK ----------------
+        for (int i = 0; i < R*C; ++i) W[i] = A[i];
+        long long compQ = 0, exchQ = 0;
+        generic_table_sort(W, R, C, QUICK, compQ, exchQ);
+        print_table_block(t, R, C, "Quick", W, compQ, exchQ);
+        cout << "\n";
+
+        // ---------------- HEAP -----------------
+        for (int i = 0; i < R*C; ++i) W[i] = A[i];
+        long long compH = 0, exchH = 0;
+        generic_table_sort(W, R, C, HEAP, compH, exchH);
+        print_table_block(t, R, C, "Heap", W, compH, exchH);
+        cout << "\n";
+
+        // ---------------- LEX ------------------
+        for (int i = 0; i < R*C; ++i) W[i] = A[i];
+        long long compL = 0, exchL = 0;
+        generic_table_sort(W, R, C, LEX, compL, exchL);
+        print_table_block(t, R, C, "Lex", W, compL, exchL);
+
+        delete[] A;
+        delete[] W;
+
+        if (t != T) cout << "\n";
+    }
+
+    return 0;
+}
